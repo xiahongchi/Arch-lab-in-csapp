@@ -1,0 +1,59 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+#
+# Describe how and why you modified the baseline code.
+#
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+
+##################################################################
+# You can modify this portion
+	# Loop header
+	xorq %rax,%rax		# count = 0;
+    iaddq $-1,%rdx
+    andq %rdx,%rdx
+    jle Final
+Loop:
+    mrmovq (%rdi),%r10
+    mrmovq 8(%rdi),%r11
+    rrmovq %rax,%rcx
+    iaddq $1,%rcx
+    andq %r10,%r10
+    cmovg %rcx,%rax
+    rmmovq %r10,(%rsi)
+    rmmovq %r11,8(%rsi)
+    rrmovq %rax,%rcx
+    iaddq $1,%rcx
+    andq %r11,%r11
+    cmovg %rcx,%rax
+    iaddq $16,%rdi
+    iaddq $16,%rsi
+    iaddq $-2,%rdx
+    andq %rdx,%rdx
+    jg Loop
+Final:
+    andq %rdx,%rdx
+    jl Done
+    mrmovq (%rdi),%r10
+    rrmovq %rax,%rcx
+    iaddq $1,%rcx
+    andq %r10,%r10
+    cmovg %rcx,%rax
+    rmmovq %r10,(%rsi)
+
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */
